@@ -3,61 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AURA SHOP PRO - প্রিমিয়াম দোকান</title>
+<title>Order - AURA SHOP PRO</title>
 <style>
 body{font-family:'Hind Siliguri',sans-serif;background:#0f0f0f;color:#fff;margin:0;padding:0}
-header{background:linear-gradient(90deg,#ff00ff,#00ffff);padding:20px;text-align:center}
-header h1{margin:0;font-size:28px}
-.container{max-width:900px;margin:20px auto;padding:20px}
-.product{background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:20px;border:1px solid #333}
-.product img{width:100%;border-radius:8px}
-.btn{background:#00ffff;color:#000;padding:12px 25px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:16px;width:100%}
-.btn:hover{background:#00cccc}
-form{background:#1a1a1a;padding:20px;border-radius:10px;margin-top:20px}
+header{background:linear-gradient(90deg,#ff00ff,#00ffff);padding:15px;text-align:center}
+header h1{margin:0;font-size:22px}
+.container{max-width:600px;margin:20px auto;padding:20px}
+.support-btn{display:block;background:#222;color:#00ffff;text-align:center;padding:12px;margin:10px 0;border-radius:8px;text-decoration:none;font-weight:bold;border:1px solid #00ffff}
+form{background:#1a1a1a;padding:20px;border-radius:10px}
 input,textarea{width:100%;padding:12px;margin:8px 0;background:#222;border:1px solid #444;color:#fff;border-radius:5px;box-sizing:border-box}
-.inbox{color:#00ff88;font-weight:bold;line-height:1.8;background:#0a2a1a;padding:15px;border-radius:8px}
-.note{color:#ffaa00;font-size:14px}
+.btn{background:#00ffff;color:#000;padding:14px 25px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:16px;width:100%}
+.btn:hover{background:#00cccc}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🔥 AURA SHOP PRO 🔥</h1>
-  <p>প্রিমিয়াম প্রোডাক্ট এর বিশ্বস্ত দোকান</p>
+  <h1>📦 অর্ডার করুন - AURA SHOP PRO</h1>
 </header>
 
 <div class="container">
 
-  <h2>আমাদের প্রোডাক্ট</h2>
-  <div class="product">
-    <img src="https://i.ibb.co/4pDgLN9/mail.jpg" alt="Hotmail">
-    <h3>Hotmail Old Mail 2020</h3>
-    <p>✅ 100% ফ্রেশ <br>✅ রিকভারি আছে <br>✅ ইনবক্স ক্লিন</p>
-    <p><b>দাম: 50 টাকা</b></p>
-    <button class="btn" onclick="orderNow('Hotmail Old Mail 2020 - 50 Taka')">অর্ডার করুন</button>
-  </div>
+  <a href="https://t.me/niyazgamar" class="support-btn">📞 Live Customer Support</a>
 
-  <div class="product">
-    <img src="https://i.ibb.co/4pDgLN9/mail.jpg" alt="Gmail">
-    <h3>Gmail Old Account 2019</h3>
-    <p>✅ 100% ফ্রেশ <br>✅ 2FA অফ <br>✅ ইনবক্স ক্লিন</p>
-    <p><b>দাম: 80 টাকা</b></p>
-    <button class="btn" onclick="orderNow('Gmail Old Account 2019 - 80 Taka')">অর্ডার করুন</button>
-  </div>
-
-  <h2>📧 ইনবক্স ইমেইল মানে কি?</h2>
-  <p class="inbox">
-  <b>Inbox Email</b> মানে হলো এই ইমেইল একদম ফ্রেশ এবং একটিভ।<br><br>
-  <b>যা যা পাবেন:</b><br>
-    1. ইমেইল + পাসওয়ার্ড ফুল এক্সেস<br>
-  2. রিকভারি ইমেইল + নাম্বার সেট করা আছে<br>
-  3. ইনবক্সে পুরাতন মেইল থাকবে<br>
-  4. 100% রিপ্লেসমেন্ট গ্যারান্টি 24 ঘন্টা<br><br>
-  অর্ডার করার 5 মিনিটের মধ্যে সব ডেলিভারি Telegram এ পাবেন।
-  </p>
-  <p class="note">বিঃদ্রঃ পেমেন্ট করার পর অর্ডার কনফার্ম হবে</p>
-
-  <h2>📦 অর্ডার করুন</h2>
+  <h2>অর্ডার ফর্ম</h2>
   <form id="orderForm">
     <input type="text" id="name" placeholder="আপনার পুরো নাম" required>
     <input type="text" id="phone" placeholder="আপনার বিকাশ/নগদ নাম্বার" required>
@@ -72,10 +41,9 @@ input,textarea{width:100%;padding:12px;margin:8px 0;background:#222;border:1px s
 const BOT_TOKEN = "8638802638:AAHdqwpEKQyvgwt-0gDKWVo9arJpQrZ0Mt4";
 const CHAT_ID = "7803284941";
 
-function orderNow(productName){
-  document.getElementById('product').value = productName;
-  window.scrollTo(0,document.body.scrollHeight);
-}
+// URL থেকে প্রোডাক্ট নাম নিবে
+const urlParams = new URLSearchParams(window.location.search);
+document.getElementById('product').value = urlParams.get('product') || 'Product Name';
 
 document.getElementById('orderForm').addEventListener('submit',function(e){
   e.preventDefault();
