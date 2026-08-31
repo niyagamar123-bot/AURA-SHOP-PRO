@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><title>Main Admin Panel</title>
+<style>body{background:#0a0a0a;color:#fff;font-family:sans-serif;padding:20px;max-width:900px;margin:auto}h1,h2,h3{color:#00ff88;text-align:center}input,button,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #00ff88;background:#222;color:#fff;box-sizing:border-box}button{background:#00ff88;color:#000;font-weight:bold;cursor:pointer}.section{background:#1a1a1a;padding:20px;border-radius:12px;margin:20px 0;border:2px solid #00ff88}.item{background:#222;padding:15px;margin:10px 0;border-radius:10px;display:flex;gap:15px;align-items:center}.item img{width:80px;height:80px;object-fit:cover;border-radius:8px}.delete-btn{background:#ff4444;color:#fff}</style>
+</head><body><h1>👑 Niyazgamar Main Admin</h1>
+<div id="login"><h2>Login</h2><input type="password" id="pass" placeholder="Password: Niyaz@@@"><button onclick="login()">Login</button></div>
+<div id="panel" style="display:none">
+<div class="section"><h3>Add New Product</h3><input id="pname" placeholder="Product Name"><textarea id="pdesc" placeholder="Product Description" rows="3"></textarea><input id="pprice" type="number" placeholder="Product Price TK"><input id="pimg" placeholder="Product Image URL"><button onclick="addProduct()">Add Product</button><div id="productList"></div></div>
+<div class="section"><h3>Manage 20 Order Admins</h3><input id="aname" placeholder="Admin Name"><input id="aphone" placeholder="Admin WhatsApp Number 01XXXXXXXXX"><input id="abkash" placeholder="Admin Bkash Number"><input id="anagad" placeholder="Admin Nagad Number"><input id="atelegram" placeholder="Admin Telegram Chat ID"><button onclick="addAdmin()">Add New Admin</button><div id="adminList"></div></div>
+<div class="section"><h3>All Orders</h3><div id="orders">Loading...</div></div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+const app = initializeApp({apiKey:"AIzaSyAeL4HVPaea7ZCfI3jg1HFcJlv1nxnOm8g",databaseURL:"https://aura-premium-shop-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"aura-premium-shop"});
+const db = getDatabase(app);
+function login(){ if(document.getElementById('pass').value == 'Niyaz@@@'){document.getElementById('login').style.display='none';document.getElementById('panel').style.display='block'; loadData();}else{ alert('Wrong Password') } }
+window.login = login;
+function loadData(){
+onValue(ref(db,'products'), snap=>{let html=''; snap.forEach(c=>{ let p=c.val(); html+=`<div class="item"><img src="${p.img}"><div style="flex:1"><b>${p.name}</b><br>${p.desc}<br><span style="color:#00ff88">${p.price} TK</span></div><button class="delete-btn" onclick="del('products','${c.key}')">Delete</button></div>`}); document.getElementById('productList').innerHTML=html || 'কোনো Product নাই';});
+onValue(ref(db,'admins'), snap=>{let html=''; snap.forEach(c=>{ let a=c.val(); html+=`<div class="item"><div style="flex:1"><b>${a.name}</b><br>WhatsApp: ${a.phone}<br>Bkash: ${a.bkash}<br>Nagad: ${a.nagad}<br>Orders: ${a.orderCount || 0}</div><button class="delete-btn" onclick="del('admins','${c.key}')">Delete</button></div>`}); document.getElementById('adminList').innerHTML=html || 'কোনো Admin নাই';});
+onValue(ref(db,'orders'), snap=>{let html=''; snap.forEach(c=>{ let o=c.val(); html+=`<div class="item"><b>OrderID:</b> ${o.orderId}<br><b>Product:</b> ${o.order}<br><b>Assigned To:</b> ${o.assignedTo || 'Waiting'}<br><b>Status:</b> ${o.status}</div>`}); document.getElementById('orders').innerHTML=html || 'কোনো Order নাই';});}
+window.addProduct = function(){if(pname.value=='' || pprice.value=='' || pimg.value=='' || pdesc.value==''){alert('সব 4টা ঘর পূরণ করুন'); return;} push(ref(db,'products'),{name: pname.value, desc: pdesc.value, price: pprice.value, img: pimg.value}); alert('✅ Product Added'); pname.value=''; pdesc.value=''; pprice.value=''; pimg.value='';}
+window.addAdmin = function(){if(aname.value=='' || aphone.value==''){alert('Admin Name আর Number দাও'); return;} push(ref(db,'admins'),{name:aname.value,phone:aphone.value,bkash:abkash.value,nagad:anagad.value,telegram:atelegram.value,orderCount:0,password:'Niyaz@@@'}); alert('✅ Admin Added'); aname.value=''; aphone.value=''; abkash.value=''; anagad.value=''; atelegram.value='';}
+window.del = function(path,id){if(confirm('Delete করবা?')) remove(ref(db, path + '/' + id));}
+</script></body></html>
