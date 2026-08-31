@@ -3,59 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Niyazgamar Shop</title>
+<title>AURA SHOP PRO - প্রিমিয়াম দোকান</title>
 <style>
-body{background:#111;color:#fff;font-family:sans-serif;padding:20px;max-width:700px;margin:auto}
-h1,h3{color:#00ff88;text-align:center}
-.product-card{background:#222;padding:15px;margin:15px 0;border-radius:12px;border:2px solid #00ff88}
-.product-card img{width:100%;border-radius:8px}
-.price{color:#00ff88;font-size:20px;font-weight:bold}
-button{background:#00ff88;color:#000;padding:12px;width:100%;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;margin-top:10px}
-select{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #00ff88;background:#222;color:#fff;font-size:16px}
-.order-form{background:#1a1a1a;padding:15px;border-radius:10px;margin-top:10px;display:none}
-.nav-btn{background:#333;color:#00ff88;margin:5px 0}
+body{font-family:'Hind Siliguri',sans-serif;background:#0f0f0f;color:#fff;margin:0;padding:0}
+header{background:linear-gradient(90deg,#ff00ff,#00ffff);padding:20px;text-align:center}
+header h1{margin:0;font-size:28px}
+.container{max-width:900px;margin:20px auto;padding:20px}
+.product{background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:20px;border:1px solid #333}
+.product img{width:100%;border-radius:8px}
+.btn{background:#00ffff;color:#000;padding:12px 25px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:16px;width:100%}
+.btn:hover{background:#00cccc}
+form{background:#1a1a1a;padding:20px;border-radius:10px;margin-top:20px}
+input,textarea{width:100%;padding:12px;margin:8px 0;background:#222;border:1px solid #444;color:#fff;border-radius:5px;box-sizing:border-box}
+.inbox{color:#00ff88;font-weight:bold;line-height:1.8;background:#0a2a1a;padding:15px;border-radius:8px}
+.note{color:#ffaa00;font-size:14px}
 </style>
 </head>
 <body>
-<h1>🔥 Niyazgamar Shop 🔥</h1>
-<button class="nav-btn" onclick="window.location='support.html'">📞 Live Customer Support</button>
-<button class="nav-btn" onclick="window.location='mainadmin.html'">👑 Main Admin</button>
-<button class="nav-btn" onclick="window.location='admin.html'">📦 Order Admin</button>
-<div id="products">Loading...</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-  const firebaseConfig = {apiKey:"AIzaSyAeL4HVPaea7ZCfI3jg1HFcJlv1nxnOm8g",authDomain:"aura-premium-shop.firebaseapp.com",databaseURL:"https://aura-premium-shop-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"aura-premium-shop"};
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  let allProducts = [];
+<header>
+  <h1>🔥 AURA SHOP PRO 🔥</h1>
+  <p>প্রিমিয়াম প্রোডাক্ট এর বিশ্বস্ত দোকান</p>
+</header>
 
-  onValue(ref(db, 'products'), (snapshot) => {
-    allProducts = []; snapshot.forEach((child) => { let p = child.val(); p.id = child.key; allProducts.push(p); });
-    let html='';
-    allProducts.forEach(p => {
-      html += `<div class="product-card">
-        <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x200'">
-        <h3>${p.name}</h3><p>${p.desc}</p><p class="price">${p.price} TK</p>
-        <button onclick="showOrderForm('${p.id}')">Order Now</button>
-        <div class="order-form" id="form-${p.id}">
-          <h4>Order Confirm করুন</h4>
-          <select id="product-${p.id}">${allProducts.map(prod => `<option>${prod.name} - ${prod.price} TK</option>`).join('')}</select>
-          <button onclick="placeOrder()">Order করুন</button>
-        </div>
-      </div>`;
-    });
-    document.getElementById('products').innerHTML = html || 'কোনো Product নাই। Main Admin Add করবে';
-  });
+<div class="container">
 
-  window.showOrderForm = function(id) { document.getElementById('form-'+id).style.display = 'block'; }
-  window.placeOrder = function() {
-    let selectedProduct = document.querySelector('.order-form select').value;
-    let orderId = 'ORD' + Date.now();
-    push(ref(db, 'orders'), {orderId: orderId, order: selectedProduct, status: 'New', date: new Date().toLocaleString('bn-BD'), assignedTo: ''});
-    alert('✅ Order Successful! Order ID: ' + orderId + ' \nAdmin 5 মিনিটের মধ্যে যোগাযোগ করবে');
-  }
+  <h2>আমাদের প্রোডাক্ট</h2>
+  <div class="product">
+    <img src="https://i.ibb.co/4pDgLN9/mail.jpg" alt="Hotmail">
+    <h3>Hotmail Old Mail 2020</h3>
+    <p>✅ 100% ফ্রেশ <br>✅ রিকভারি আছে <br>✅ ইনবক্স ক্লিন</p>
+    <p><b>দাম: 50 টাকা</b></p>
+    <button class="btn" onclick="orderNow('Hotmail Old Mail 2020 - 50 Taka')">অর্ডার করুন</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.ibb.co/4pDgLN9/mail.jpg" alt="Gmail">
+    <h3>Gmail Old Account 2019</h3>
+    <p>✅ 100% ফ্রেশ <br>✅ 2FA অফ <br>✅ ইনবক্স ক্লিন</p>
+    <p><b>দাম: 80 টাকা</b></p>
+    <button class="btn" onclick="orderNow('Gmail Old Account 2019 - 80 Taka')">অর্ডার করুন</button>
+  </div>
+
+  <h2>📧 ইনবক্স ইমেইল মানে কি?</h2>
+  <p class="inbox">
+  <b>Inbox Email</b> মানে হলো এই ইমেইল একদম ফ্রেশ এবং একটিভ।<br><br>
+  <b>যা যা পাবেন:</b><br>
+    1. ইমেইল + পাসওয়ার্ড ফুল এক্সেস<br>
+  2. রিকভারি ইমেইল + নাম্বার সেট করা আছে<br>
+  3. ইনবক্সে পুরাতন মেইল থাকবে<br>
+  4. 100% রিপ্লেসমেন্ট গ্যারান্টি 24 ঘন্টা<br><br>
+  অর্ডার করার 5 মিনিটের মধ্যে সব ডেলিভারি Telegram এ পাবেন।
+  </p>
+  <p class="note">বিঃদ্রঃ পেমেন্ট করার পর অর্ডার কনফার্ম হবে</p>
+
+  <h2>📦 অর্ডার করুন</h2>
+  <form id="orderForm">
+    <input type="text" id="name" placeholder="আপনার পুরো নাম" required>
+    <input type="text" id="phone" placeholder="আপনার বিকাশ/নগদ নাম্বার" required>
+    <textarea id="address" placeholder="সম্পূর্ণ ঠিকানা" rows="3" required></textarea>
+    <input type="text" id="product" placeholder="প্রোডাক্ট এর নাম" readonly required>
+    <button type="submit" class="btn">Order Now - Telegram এ পাঠান</button>
+  </form>
+
+</div>
+
+<script>
+const BOT_TOKEN = "8638802638:AAHdqwpEKQyvgwt-0gDKWVo9arJpQrZ0Mt4";
+const CHAT_ID = "7803284941";
+
+function orderNow(productName){
+  document.getElementById('product').value = productName;
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+document.getElementById('orderForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  let name = document.getElementById('name').value;
+  let phone = document.getElementById('phone').value;
+  let address = document.getElementById('address').value;
+  let product = document.getElementById('product').value;
+
+  let message = `🔥 নতুন অর্ডার 🔥%0A%0A
+  প্রোডাক্ট: ${product}%0A
+  নাম: ${name}%0A
+  নাম্বার: ${phone}%0A
+  ঠিকানা: ${address}%0A%0A
+  সময়: ${new Date().toLocaleString('bn-BD')}`;
+
+  let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}`;
+  
+  fetch(url).then(res=>{
+    alert("অর্ডার সফল! আমরা শীঘ্রই Telegram এ যোগাযোগ করবো ✅");
+    document.getElementById('orderForm').reset();
+  }).catch(err=>{
+    alert("সমস্যা হয়েছে, আবার চেষ্টা করুন");
+  })
+})
 </script>
+
 </body>
 </html>
