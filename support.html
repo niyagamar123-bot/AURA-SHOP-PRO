@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><meta charset="UTF-8"><title>Live Support</title>
+<style>body{background:#111;color:#fff;font-family:sans-serif;padding:20px;max-width:700px;margin:auto}h2{color:#00ff88;text-align:center} input,select,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #00ff88;background:#222;color:#fff;box-sizing:border-box}button{background:#00ff88;color:#000;padding:12px;width:100%;border:none;border-radius:8px;font-weight:bold;cursor:pointer}.chat-box{background:#222;padding:15px;border-radius:10px;height:300px;overflow-y:scroll;margin:10px 0}.msg{margin:8px 0;padding:10px;border-radius:8px;max-width:80%}.user{background:#00ff88;color:#000;margin-left:auto}.admin{background:#333;color:#fff;margin-right:auto}</style>
+</head>
+<body>
+<h2>📞 Live Customer Support</h2>
+<div class="support-form">
+  <select id="issue"><option>সমস্যার ধরন সিলেক্ট করুন</option><option>Payment Issue</option><option>Delivery Issue</option><option>Product Issue</option></select>
+  <input id="orderid" placeholder="Order ID থাকলে লিখুন">
+  <input id="screenshot" placeholder="Screenshot এর Image URL">
+  <textarea id="message" placeholder="আপনার সমস্যা বিস্তারিত লিখুন" rows="3"></textarea>
+  <button onclick="sendSupport()">Submit Ticket</button>
+</div>
+<h3>Admin Chat</h3><div class="chat-box" id="chat"></div>
+<input id="reply" placeholder="Reply লিখুন"><button onclick="sendReply()">Send</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  const app = initializeApp({apiKey:"AIzaSyAeL4HVPaea7ZCfI3jg1HFcJlv1nxnOm8g",databaseURL:"https://aura-premium-shop-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"aura-premium-shop"});
+  const db = getDatabase(app); 
+  let ticketId = 'TKT' + Date.now();
+  
+  function sendSupport(){
+    if(message.value==''){alert('সমস্যা লিখুন'); return;}
+    push(ref(db, 'support/'+ticketId), {issue: issue.value, orderid: orderid.value, screenshot: screenshot.value, message: message.value, from: 'Customer', time: new Date().toLocaleString('bn-BD')}); 
+    alert('✅ Ticket Submitted: ' + ticketId);
+  }
+  function sendReply(){
+    if(reply.value=='') return;
+    push(ref(db, 'support/'+ticketId), {message: reply.value, from: 'Customer', time: new Date().toLocaleString('bn-BD')}); 
+    reply.value='';
+  }
+  onValue(ref(db, 'support/'+ticketId), (snap)=>{let html=''; snap.forEach(c=>{ let m=c.val(); html+=`<div class="msg ${m.from=='Customer'?'user':'admin'}"><b>${m.from}:</b> ${m.message}<br><small>${m.time}</small></div>`}); document.getElementById('chat').innerHTML=html; document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;});
+  window.sendSupport=sendSupport; window.sendReply=sendReply;
+</script>
+</body>
+</html>
