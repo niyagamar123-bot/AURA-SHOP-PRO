@@ -1,24 +1,90 @@
-<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><title>Main Admin Panel</title>
-<style>body{background:#0a0a0a;color:#fff;font-family:sans-serif;padding:20px;max-width:900px;margin:auto}h1,h2,h3{color:#00ff88;text-align:center}input,button,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #00ff88;background:#222;color:#fff;box-sizing:border-box}button{background:#00ff88;color:#000;font-weight:bold;cursor:pointer}.section{background:#1a1a1a;padding:20px;border-radius:12px;margin:20px 0;border:2px solid #00ff88}.item{background:#222;padding:15px;margin:10px 0;border-radius:10px;display:flex;gap:15px;align-items:center}.item img{width:80px;height:80px;object-fit:cover;border-radius:8px}.delete-btn{background:#ff4444;color:#fff}</style>
-</head><body><h1>👑 Niyazgamar Main Admin</h1>
-<div id="login"><h2>Login</h2><input type="password" id="pass" placeholder="Password: Niyaz@@@"><button onclick="login()">Login</button></div>
-<div id="panel" style="display:none">
-<div class="section"><h3>Add New Product</h3><input id="pname" placeholder="Product Name"><textarea id="pdesc" placeholder="Product Description" rows="3"></textarea><input id="pprice" type="number" placeholder="Product Price TK"><input id="pimg" placeholder="Product Image URL"><button onclick="addProduct()">Add Product</button><div id="productList"></div></div>
-<div class="section"><h3>Manage 20 Order Admins</h3><input id="aname" placeholder="Admin Name"><input id="aphone" placeholder="Admin WhatsApp Number 01XXXXXXXXX"><input id="abkash" placeholder="Admin Bkash Number"><input id="anagad" placeholder="Admin Nagad Number"><input id="atelegram" placeholder="Admin Telegram Chat ID"><button onclick="addAdmin()">Add New Admin</button><div id="adminList"></div></div>
-<div class="section"><h3>All Orders</h3><div id="orders">Loading...</div></div>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Main Admin</title>
+<style>
+body{background:#000;color:#fff;font-family:'Hind Siliguri',sans-serif;padding:20px}
+.box{background:#111;padding:20px;border-radius:10px;max-width:900px;margin:auto}
+input,textarea,button{width:100%;padding:10px;margin:8px 0;background:#222;border:1px solid #00ffff;color:#fff;border-radius:5px}
+button{background:#00ffff;color:#000;font-weight:bold;cursor:pointer}
+#panel{display:none}
+.item{background:#222;padding:10px;margin:8px 0;border-radius:5px;display:flex;justify-content:space-between}
+.del{background:red;color:#fff;border:none;padding:5px 10px;border-radius:5px;cursor:pointer}
+.tabs button{background:#333;color:#fff;margin-right:5px}
+.tabs .active{background:#00ffff;color:#000}
+</style>
+</head>
+<body>
+<div class="box" id="login">
+  <h2>👑 Main Admin Login</h2>
+  <input type="password" id="pass" placeholder="Password: niyaz@@@">
+  <button onclick="login()">Login</button>
 </div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-const app = initializeApp({apiKey:"AIzaSyAeL4HVPaea7ZCfI3jg1HFcJlv1nxnOm8g",databaseURL:"https://aura-premium-shop-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"aura-premium-shop"});
-const db = getDatabase(app);
-function login(){ if(document.getElementById('pass').value == 'Niyaz@@@'){document.getElementById('login').style.display='none';document.getElementById('panel').style.display='block'; loadData();}else{ alert('Wrong Password') } }
-window.login = login;
-function loadData(){
-onValue(ref(db,'products'), snap=>{let html=''; snap.forEach(c=>{ let p=c.val(); html+=`<div class="item"><img src="${p.img}"><div style="flex:1"><b>${p.name}</b><br>${p.desc}<br><span style="color:#00ff88">${p.price} TK</span></div><button class="delete-btn" onclick="del('products','${c.key}')">Delete</button></div>`}); document.getElementById('productList').innerHTML=html || 'কোনো Product নাই';});
-onValue(ref(db,'admins'), snap=>{let html=''; snap.forEach(c=>{ let a=c.val(); html+=`<div class="item"><div style="flex:1"><b>${a.name}</b><br>WhatsApp: ${a.phone}<br>Bkash: ${a.bkash}<br>Nagad: ${a.nagad}<br>Orders: ${a.orderCount || 0}</div><button class="delete-btn" onclick="del('admins','${c.key}')">Delete</button></div>`}); document.getElementById('adminList').innerHTML=html || 'কোনো Admin নাই';});
-onValue(ref(db,'orders'), snap=>{let html=''; snap.forEach(c=>{ let o=c.val(); html+=`<div class="item"><b>OrderID:</b> ${o.orderId}<br><b>Product:</b> ${o.order}<br><b>Assigned To:</b> ${o.assignedTo || 'Waiting'}<br><b>Status:</b> ${o.status}</div>`}); document.getElementById('orders').innerHTML=html || 'কোনো Order নাই';});}
-window.addProduct = function(){if(pname.value=='' || pprice.value=='' || pimg.value=='' || pdesc.value==''){alert('সব 4টা ঘর পূরণ করুন'); return;} push(ref(db,'products'),{name: pname.value, desc: pdesc.value, price: pprice.value, img: pimg.value}); alert('✅ Product Added'); pname.value=''; pdesc.value=''; pprice.value=''; pimg.value='';}
-window.addAdmin = function(){if(aname.value=='' || aphone.value==''){alert('Admin Name আর Number দাও'); return;} push(ref(db,'admins'),{name:aname.value,phone:aphone.value,bkash:abkash.value,nagad:anagad.value,telegram:atelegram.value,orderCount:0,password:'Niyaz@@@'}); alert('✅ Admin Added'); aname.value=''; aphone.value=''; abkash.value=''; anagad.value=''; atelegram.value='';}
-window.del = function(path,id){if(confirm('Delete করবা?')) remove(ref(db, path + '/' + id));}
-</script></body></html>
+
+<div class="box" id="panel">
+  <h2>👑 Main Admin Panel</h2>
+  <div class="tabs">
+    <button class="active" onclick="showTab('product')">প্রোডাক্ট</button>
+    <button onclick="showTab('orderAdmin')">Order Admin</button>
+    <button onclick="showTab('supportAdmin')">Support Admin</button>
+  </div>
+  
+  <div id="productTab">
+    <h3>➕ প্রোডাক্ট Add করুন</h3>
+    <input id="pName" placeholder="প্রোডাক্টের নাম">
+    <input id="pPrice" placeholder="দাম: 50 টাকা">
+    <input id="pImg" placeholder="ছবির URL">
+    <textarea id="pDesc" placeholder="Description"></textarea>
+    <button onclick="addProduct()">Add করুন</button>
+    <h3>📦 প্রোডাক্ট লিস্ট</h3><div id="pList"></div>
+  </div>
+  
+  <div id="orderAdminTab" style="display:none">
+    <h3>➕ Order Admin Add করুন - Password: niyaz</h3>
+    <input id="oName" placeholder="Admin নাম">
+    <button onclick="addOrderAdmin()">Add করুন</button>
+    <div id="oList"></div>
+  </div>
+  
+  <div id="supportAdminTab" style="display:none">
+    <h3>➕ Support Admin Add করুন - Password: niyZ@@</h3>
+    <input id="sName" placeholder="Admin নাম">
+    <button onclick="addSupportAdmin()">Add করুন</button>
+    <div id="sList"></div>
+  </div>
+</div>
+
+<script>
+function login(){
+  if(document.getElementById('pass').value=="niyaz@@@"){
+    document.getElementById('login').style.display='none';
+    document.getElementById('panel').style.display='block';
+    loadAll();
+  }else alert("ভুল পাসওয়ার্ড")
+}
+function showTab(tab){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  ['productTab','orderAdminTab','supportAdminTab'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById(tab+'Tab').style.display='block';
+}
+
+function addProduct(){
+  let p={name:pName.value,price:pPrice.value,img:pImg.value,desc:pDesc.value};
+  let arr=JSON.parse(localStorage.getItem('products'))||[]; arr.push(p);
+  localStorage.setItem('products',JSON.stringify(arr)); loadProducts();
+}
+function deleteProduct(i){let arr=JSON.parse(localStorage.getItem('products'))||[]; arr.splice(i,1); localStorage.setItem('products',JSON.stringify(arr)); loadProducts();}
+function loadProducts(){let arr=JSON.parse(localStorage.getItem('products'))||[]; pList.innerHTML=arr.map((p,i)=>`<div class="item"><span>${p.name} - ${p.price}</span><button class="del" onclick="deleteProduct(${i})">Delete</button></div>`).join('')}
+
+function addOrderAdmin(){let arr=JSON.parse(localStorage.getItem('orderAdmins'))||[]; arr.push(oName.value); localStorage.setItem('orderAdmins',JSON.stringify(arr)); oName.value=''; loadOrderAdmins();}
+function loadOrderAdmins(){let arr=JSON.parse(localStorage.getItem('orderAdmins'))||[]; oList.innerHTML=arr.map((n,i)=>`<div class="item"><span>${n} - Pass: niyaz</span></div>`).join('')}
+
+function addSupportAdmin(){let arr=JSON.parse(localStorage.getItem('supportAdmins'))||[]; arr.push(sName.value); localStorage.setItem('supportAdmins',JSON.stringify(arr)); sName.value=''; loadSupportAdmins();}
+function loadSupportAdmins(){let arr=JSON.parse(localStorage.getItem('supportAdmins'))||[]; sList.innerHTML=arr.map((n,i)=>`<div class="item"><span>${n} - Pass: niyZ@@</span></div>`).join('')}
+
+function loadAll(){loadProducts(); loadOrderAdmins(); loadSupportAdmins();}
+</script>
+</body>
+</html>
