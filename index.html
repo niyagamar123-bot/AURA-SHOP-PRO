@@ -1,74 +1,44 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order - AURA SHOP PRO</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA SHOP PRO</title>
 <style>
 body{font-family:'Hind Siliguri',sans-serif;background:#0f0f0f;color:#fff;margin:0;padding:0}
-header{background:linear-gradient(90deg,#ff00ff,#00ffff);padding:15px;text-align:center}
-header h1{margin:0;font-size:22px}
-.container{max-width:600px;margin:20px auto;padding:20px}
-.support-btn{display:block;background:#222;color:#00ffff;text-align:center;padding:12px;margin:10px 0;border-radius:8px;text-decoration:none;font-weight:bold;border:1px solid #00ffff}
-form{background:#1a1a1a;padding:20px;border-radius:10px}
-input,textarea{width:100%;padding:12px;margin:8px 0;background:#222;border:1px solid #444;color:#fff;border-radius:5px;box-sizing:border-box}
-.btn{background:#00ffff;color:#000;padding:14px 25px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:16px;width:100%}
-.btn:hover{background:#00cccc}
+header{background:linear-gradient(90deg,#ff00ff,#00ffff);padding:20px;text-align:center}
+.top-btns{display:flex;gap:10px;justify-content:center;margin-top:10px}
+.top-btns a{background:#000;color:#00ffff;padding:10px 18px;border-radius:5px;text-decoration:none;border:1px solid #00ffff;font-weight:bold}
+.container{max-width:1000px;margin:20px auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.product{background:#1a1a1a;padding:15px;border-radius:10px;border:1px solid #333}
+.product img{width:100%;height:180px;object-fit:cover;border-radius:8px}
+.btn{display:block;background:#00ffff;color:#000;padding:12px;text-align:center;border-radius:5px;text-decoration:none;font-weight:bold;margin-top:10px}
 </style>
 </head>
 <body>
-
 <header>
-  <h1>📦 অর্ডার করুন - AURA SHOP PRO</h1>
+  <h1>🔥 AURA SHOP PRO 🔥</h1>
+  <div class="top-btns">
+    <a href="https://wa.me/8801908807313" target="_blank">💬 Customer Service</a>
+    <a href="admin.html">👑 Main Admin</a>
+  </div>
 </header>
-
-<div class="container">
-
-  <a href="https://t.me/niyazgamar" class="support-btn">📞 Live Customer Support</a>
-
-  <h2>অর্ডার ফর্ম</h2>
-  <form id="orderForm">
-    <input type="text" id="name" placeholder="আপনার পুরো নাম" required>
-    <input type="text" id="phone" placeholder="আপনার বিকাশ/নগদ নাম্বার" required>
-    <textarea id="address" placeholder="সম্পূর্ণ ঠিকানা" rows="3" required></textarea>
-    <input type="text" id="product" placeholder="প্রোডাক্ট এর নাম" readonly required>
-    <button type="submit" class="btn">Order Now - Telegram এ পাঠান</button>
-  </form>
-
-</div>
+<div class="container" id="productContainer"></div>
 
 <script>
-const BOT_TOKEN = "8638802638:AAHdqwpEKQyvgwt-0gDKWVo9arJpQrZ0Mt4";
-const CHAT_ID = "7803284941";
-
-// URL থেকে প্রোডাক্ট নাম নিবে
-const urlParams = new URLSearchParams(window.location.search);
-document.getElementById('product').value = urlParams.get('product') || 'Product Name';
-
-document.getElementById('orderForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  let name = document.getElementById('name').value;
-  let phone = document.getElementById('phone').value;
-  let address = document.getElementById('address').value;
-  let product = document.getElementById('product').value;
-
-  let message = `🔥 নতুন অর্ডার 🔥%0A%0A
-  প্রোডাক্ট: ${product}%0A
-  নাম: ${name}%0A
-  নাম্বার: ${phone}%0A
-  ঠিকানা: ${address}%0A%0A
-  সময়: ${new Date().toLocaleString('bn-BD')}`;
-
-  let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}`;
-  
-  fetch(url).then(res=>{
-    alert("অর্ডার সফল! আমরা শীঘ্রই Telegram এ যোগাযোগ করবো ✅");
-    document.getElementById('orderForm').reset();
-  }).catch(err=>{
-    alert("সমস্যা হয়েছে, আবার চেষ্টা করুন");
-  })
-})
+let products = JSON.parse(localStorage.getItem('products')) || [
+  {name:"Hotmail Old Mail 2020", price:"50 টাকা", img:"https://i.ibb.co/xyz.jpg", desc:"✅ 100% ফ্রেশ | ✅ ইনবক্স আছে"}
+];
+let html = '';
+products.forEach(p=>{
+  html += `<div class="product">
+    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x180'">
+    <h3>${p.name}</h3>
+    <p>${p.desc}</p>
+    <p><b>দাম: ${p.price}</b></p>
+    <a href="order.html?product=${encodeURIComponent(p.name + ' - ' + p.price)}" class="btn">Order Now</a>
+  </div>`;
+});
+document.getElementById('productContainer').innerHTML = html || "<p>এখনো কোনো প্রোডাক্ট Add হয়নি</p>";
 </script>
-
 </body>
 </html>
